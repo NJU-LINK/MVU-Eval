@@ -75,3 +75,77 @@ It assesses eight core competencies: *Object Recognition, Spatial Understanding,
 <p align="center">
   <img src="assets/scalinglaw.png" width="800" alt="MVU-Eval Statistics">
 </p>
+
+---
+
+## 📦 Data
+
+Please download the dataset from:  
+👉 [https://huggingface.co/datasets/MVU-Eval-Team/MVU-Eval-Data](https://huggingface.co/datasets/MVU-Eval-Team/MVU-Eval-Data)
+
+After downloading, extract the data into the `./MVU-Eval-Data/` directory.  
+It contains all video clips (`.mp4`) and the corresponding QA annotation files (`.json`).
+
+---
+
+## 💻 Scripts
+
+Below is an example of how to launch the **Qwen/Qwen2.5-VL-3B-Instruct** model using `vLLM`  
+and run the inference script for evaluation.
+
+
+### 1) Start the vLLM Server
+
+```bash
+# Start vLLM server (example: Qwen/Qwen2.5-VL-3B-Instruct)
+python -m vllm.entrypoints.openai.api_server \
+    --model Qwen/Qwen2.5-VL-3B-Instruct \
+    --served-model-name Qwen/Qwen2.5-VL-3B-Instruct \
+    --api-key sk-abc123 \
+    --tensor-parallel-size 4 \
+    --pipeline-parallel-size 1 \
+    --trust-remote-code \
+    --dtype auto \
+    --gpu-memory-utilization 0.85 \
+    --port 8007 \
+    --host localhost 
+```
+
+**Note:** Adjust --tensor-parallel-size to your GPU count and memory.
+If you use another port, update --port in the next step accordingly.
+
+### 2) Run Inference
+Then navigate to the inference directory and run the main inference script:
+```bash
+cd inference
+
+# Replace paths/filenames as needed:
+python inference/main.py \
+  --model_name Qwen/Qwen2.5-VL-3B-Instruct \
+  --port 8007 \
+  --data_filename QA_json_file.json \
+  --data_root /path/to/MVU-Eval-Data/videos \
+  --nframes 32 \
+  --max_pixels 720
+```
+
+- --data_filename points to a JSON under QA_output/ (e.g., QA_json_file.json).
+- --data_root is the root directory containing all videos used in the QA file.
+- --nframes (default: 32) is the number of uniformly sampled frames per video.
+- --max_pixels (default: 720) is the max side for frame resizing.
+
+After execution, predictions will be saved under:
+```
+inference/Model_output/max_pixel_{max_pixels}_nframes_{nframes}/{QA_json_file_stem}/main/
+```
+
+### 3) Analyze Results
+```bash
+# Generate per-task and overall accuracy tables/plots from saved predictions
+python inference/analyze.py
+```
+
+The analysis script will:
+- Aggregate results from Model_output/…/*.json
+- Compute overall and task-wise accuracy
+- Export a markdown table and save comparison plots for reporting
