@@ -149,3 +149,20 @@ The analysis script will:
 - Aggregate results from Model_output/…/*.json
 - Compute overall and task-wise accuracy
 - Export a markdown table and save comparison plots for reporting
+
+---
+
+## 🪶 Citation
+
+If you find MVU-Eval useful for your research, please cite:
+
+```
+@inproceedings{
+  peng2025mvueval,
+  title={{MVU}-Eval: Towards Multi-Video Understanding Evaluation for Multimodal {LLM}s},
+  author={Tianhao Peng and Haochen Wang and Yuanxing Zhang and Zekun Moore Wang and Zili Wang and Ge Zhang and Jian Yang and Shihao Li and Yanghai Wang and Xintao Wang and Houyi Li and Wei Ji and Pengfei Wan and Wenhao Huang and Zhaoxiang Zhang and Jiaheng Liu},
+  booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
+  year={2025},
+  url={https://openreview.net/forum?id=UZD5CQV6f9}
+}
+```
